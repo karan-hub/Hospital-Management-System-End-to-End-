@@ -16,8 +16,8 @@ public class Department {
     private  String name ;
     private  String  description;
 
-    @OneToOne
-    @JoinColumn(name = "head_doctor")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "head_doctor"  )
     private Doctor doctor;
 
     @ManyToMany

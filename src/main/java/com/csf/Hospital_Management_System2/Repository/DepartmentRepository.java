@@ -12,6 +12,7 @@ import java.util.Optional;
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
     Optional<Department> findByName(String name);
+
     @Query("SELECT dept FROM Department dept JOIN dept.doctors d WHERE d.id = :doctorId")
     List<Department> findAllByDoctorId(@Param("doctorId") Long doctorId);
 }
