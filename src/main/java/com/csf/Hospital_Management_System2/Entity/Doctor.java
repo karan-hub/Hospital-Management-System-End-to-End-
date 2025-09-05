@@ -2,10 +2,7 @@ package com.csf.Hospital_Management_System2.Entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,6 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@Builder
 public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +29,8 @@ public class Doctor {
     @Column(nullable = false)
     private  String specialization;
 
-    @Column(nullable = false , length = 10 , unique = true)
-    private   Integer contact_number ;
+    @Column(nullable = false  , unique = true)
+    private   Long contact_number ;
 
     @Column(nullable = false , unique = true )
     private   String email ;
