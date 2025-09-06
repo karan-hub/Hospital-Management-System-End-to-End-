@@ -1,14 +1,16 @@
 package com.csf.Hospital_Management_System2.Service;
 
+import com.csf.Hospital_Management_System2.Dot.RequestPaymentDTO;
 import com.csf.Hospital_Management_System2.Entity.Appointment;
 import com.csf.Hospital_Management_System2.Entity.Payment;
-import com.csf.Hospital_Management_System2.Entity.type.Status;
+import com.csf.Hospital_Management_System2.Entity.type.PaymentStatus;
 import com.csf.Hospital_Management_System2.Repository.AppointmentRepository;
 import com.csf.Hospital_Management_System2.Repository.PaymentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
@@ -23,7 +25,19 @@ public class PaymentsService {
     private final AppointmentRepository appointmentRepository;
 
     @Transactional
-    public Payment createPayment(Payment payment) {
+    public Payment createPayment(RequestPaymentDTO dot) {
+        Appointment  appointment =  appointmentRepository.findById(dot.getAppointmentId()).orElseThrow(
+                ()->new RuntimeException(" Appointment Not Found")
+        );
+      PaymentStatus status=  Arrays.stream(PaymentStatus.values()).filter((s)-> s.toString().equalsIgnoreCase(dot.getStatus())).findAny().orElseThrow(
+              ()->new RuntimeException("INVALID STATUS")
+      );
+        Payment payment= Payment.builder()
+                .appointment(appointment)
+                .amount(dot.getAmount())
+                .status(status)
+                .build();
+
         return paymentRepository.save(payment);
     }
 
@@ -39,7 +53,7 @@ public class PaymentsService {
         payment.setAppointment(appointment);
 
         appointmentRepository.save(appointment);
-        return paymentRepository.save(payment);
+        return payment;
     }
 
     public Payment getPaymentById(Long paymentId) {
@@ -48,11 +62,14 @@ public class PaymentsService {
     }
 
     @Transactional
-    public Payment updatePayment(Long paymentId, Long amount, Status status) {
+    public Payment updatePayment(Long paymentId, Long amount, String status) {
+        PaymentStatus UpdatedStatus =  Arrays.stream(PaymentStatus.values()).filter((s)-> s.toString().equalsIgnoreCase(status)).findAny().orElseThrow(
+                ()->new RuntimeException("INVALID STATUS")
+        );
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new RuntimeException("Payment not found"));
         payment.setAmount(amount);
-        payment.setStatus(status);
+        payment.setStatus(UpdatedStatus);
         return paymentRepository.save(payment);
     }
 
@@ -63,7 +80,8 @@ public class PaymentsService {
         paymentRepository.delete(payment);
     }
 
-    public List<Payment> listPaymentsByStatus(Status status) {
+
+    public List<Payment> listPaymentsByStatus(PaymentStatus status) {
         return paymentRepository.findByStatus(status);
     }
 

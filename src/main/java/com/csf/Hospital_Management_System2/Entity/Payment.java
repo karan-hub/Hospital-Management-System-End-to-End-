@@ -1,22 +1,22 @@
 package com.csf.Hospital_Management_System2.Entity;
 
+import com.csf.Hospital_Management_System2.Entity.type.PaymentStatus;
 import com.csf.Hospital_Management_System2.Entity.type.Status;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
+@Builder
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private   Long bill_id ;
+    @Column(name = "bill_id")
+    private   Long  bill_id ;
 
     @JsonManagedReference
     @OneToOne(mappedBy = "payment" ,  cascade =  CascadeType.ALL)
@@ -25,6 +25,6 @@ public class Payment {
     private  Long amount ;
 
     @Enumerated(EnumType.STRING)
-    private Status status ;
+    private PaymentStatus status ;
 
 }
